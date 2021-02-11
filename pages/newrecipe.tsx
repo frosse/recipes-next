@@ -7,7 +7,7 @@ const NewRecipe = () => {
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
-        const res = await fetch('http://localhost:3000/api/recipe', {
+        const res = await fetch('/api/recipe', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

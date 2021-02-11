@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import Recipes from '../Components/Recipes';
+import DatabaseService from '../services/database';
+import Recipe, { IRecipe } from '../models/Recipes';
 import styles from '../styles/Home.module.css'
+import { Mongoose } from 'mongoose';
 
-export default function Home() {
+export default function Home({recipes}) {
   return (
     <div className={styles.container}>
       <Head>
@@ -12,7 +15,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1>Welcome</h1>
-        <Recipes />
+        <Recipes data={recipes}/>
        
       </main>
 
@@ -21,4 +24,20 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+export async function getServerSideProps(context) {
+   DatabaseService.connect();
+
+    const data: IRecipe[] = await Recipe.find();
+    const recipes = data.map((recipe)=> {
+      return {
+        _id: JSON.stringify(recipe._id),
+        name: recipe.name,
+        description: recipe.description
+      }
+    })
+  return {
+    props: {recipes}
+  }
 }
