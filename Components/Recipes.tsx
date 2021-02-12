@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import fetch from 'isomorphic-unfetch';
+import Link from 'next/link';
 
 interface Recipe {
     _id: string;
@@ -7,14 +7,20 @@ interface Recipe {
     description: string;
 }
 
-const Recipes = ({data}) => {
+const Recipes = ({ data }) => {
     const [recipes, setRecipes] = useState<Recipe[]>(data);
 
     const recipeList: ReactElement[] = recipes.map(recipe => {
-        return (<div key={recipe._id}>{recipe.name}</div>)
+        return (
+            <div className="card" key={recipe._id}>
+                <Link href={`recipes/${recipe._id}`}>
+                    <h3>{recipe.name}</h3>
+                </Link>
+            </div>
+        );
     });
 
-    return <>{recipeList}</>
+    return <div className="grid">{recipeList}</div>
 
 }
 export default Recipes;

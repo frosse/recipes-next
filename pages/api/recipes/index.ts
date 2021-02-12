@@ -1,5 +1,5 @@
-import DatabaseService from '../../services/database';
-import Recipe, { IRecipe } from '../../models/Recipes';
+import DatabaseService from '../../../services/database';
+import Recipe, { IRecipe } from '../../../models/Recipes';
 
 export default async (req, res) => {
   if (req.method === 'GET') {
@@ -14,7 +14,6 @@ export default async (req, res) => {
   if (req.method === 'POST') {
     DatabaseService.connect();
 
-    console.log(req.body);
     const { name, desc } = req.body;
     const recipe: IRecipe = new Recipe({ "name": name, "description": desc });
     try {
@@ -22,8 +21,10 @@ export default async (req, res) => {
 
     } catch (error) {
       console.log(error);
-      res.status(500).json(error);
+      res.status(500).json(JSON.stringify(error));
     }
-    res.status(200).json("OK")
+    const newRecipe = await Recipe.findOne({name: name});
+    console.log(newRecipe);
+    await res.status(200).json(newRecipe);
   }
 }
