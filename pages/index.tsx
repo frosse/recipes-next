@@ -3,7 +3,6 @@ import Recipes from '../Components/Recipes';
 import DatabaseService from '../services/database';
 import Recipe, { IRecipe } from '../models/Recipes';
 import styles from '../styles/Home.module.css'
-import { Mongoose } from 'mongoose';
 
 export default function Home({recipes}) {
   return (
