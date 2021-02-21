@@ -1,27 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import React from "react";
+import DatabaseService from "../../services/database";
+import { getSession } from "next-auth/client";
+import Recipe, { IRecipe } from "../../models/Recipes";
 
-const Page = () => {
-    const router = useRouter();
+const Page = ({ recipe }) => {
+  return (
+    <div className="container">
+      <h1>{recipe.name}</h1>
+      <p style={{ whiteSpace: "pre-wrap" }}>{recipe.description}</p>
+    </div>
+  );
+};
 
-    const [name, setName] = useState<string>("");
-    const [desc, setDesc] = useState<string>("");
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
 
-    const getRecipe = async () => {
-        const data = await fetch(`/api/recipes/${router.query.id}`)
-        const recipe = await data.json()
-        setName(recipe.name);
-        setDesc(recipe.description);
-    }
-    const test = () => {
-        getRecipe();
-    }
+  if (!session) {
+    return {
+      props: {},
+      redirect: {
+        destination: "/",
+        permanent: false
+      }
+    };
+  }
 
-    useEffect(test, []);
-    return (<div className="container">
-        <h1>{name}</h1>
-        <p style={{whiteSpace: "pre-wrap"}}>{desc}</p>
-    </div>)
+  DatabaseService.connect();
+
+  const data: IRecipe = await Recipe.findOne({ _id: context.params.id });
+  const recipe = {
+    _id: JSON.stringify(data._id),
+    name: data.name,
+    description: data.description
+  };
+  return {
+    props: { recipe }
+  };
 }
 
 export default Page;
