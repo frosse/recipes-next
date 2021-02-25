@@ -12,11 +12,11 @@ const Recipes = ({ data }) => {
 
   const recipeList: ReactElement[] = recipes.map(recipe => {
     return (
-      <div className="card" key={recipe._id}>
-        <Link href={`recipes/${recipe._id}`}>
+      <Link key={recipe._id} href={`recipes/${recipe._id}`}>
+        <div className="card">
           <h3>{recipe.name}</h3>
-        </Link>
-      </div>
+        </div>
+      </Link>
     );
   });
 
